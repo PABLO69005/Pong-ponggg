@@ -14,11 +14,11 @@ void fill(char array[limY][limX], int dX, int dY, int fX, int fY, char sgn) { //
 	for (int i = 0; i < (fX - dX) * (fY - dY)+1; i++) {
 		array[localX][localY] = sgn;
 		if (localY == fX - 1)						
-			localX++, localY = dX;											// Clean and write fonction
+			localX++, localY = dX;
 		else										
 			localY++;
 	}
-}																		// /
+}
 
 void ball() {
 	int minX = ballmX; int maxX = ballfX; int minY = ballmY; int maxY = ballfY;
