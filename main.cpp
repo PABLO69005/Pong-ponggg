@@ -2,75 +2,51 @@
 #include <thread>
 #include <chrono>
 #include <algorithm>
-const int maxX = 90;
-const int maxY = 20;
-int roue[maxX][maxY];
+const int limX = 100;
+const int limY = 21;
+int ballmX = 20; int ballmY = 10; int ballfX = 21; int ballfY = 10;
+char roue[limY][limX];
 
 
-void fill(int array[maxX][maxY], int dX, int dY, int fX, int fY, int nb) { // /
-	int dimX = dX;
-	int dimY = dY;
-	for (int i = 0; i < (fX - dX) * (fY - dY); i++) {
-		array[dimX][dimY] = nb;
-		if (dimX == fX - 1)						
-			dimY++, dimX = dX;											// Clean and write fonction
+void fill(char array[limY][limX], int dX, int dY, int fX, int fY, char sgn) { // / à ne pas toucher, tout est inversé (x /y)
+	int localY = dX; 
+	int localX = dY;
+	for (int i = 0; i < (fX - dX) * (fY - dY)+1; i++) {
+		array[localX][localY] = sgn;
+		if (localY == fX - 1)						
+			localX++, localY = dX;											// Clean and write fonction
 		else										
-			dimX++;
+			localY++;
 	}
 }																		// /
 
-int ball() {
-	int Bframe = 3;
+void ball() {
+	int minX = ballmX; int maxX = ballfX; int minY = ballmY; int maxY = ballfY;
 	int V = 1;
 	int D = 0; 
-	int minX = 30;
-	int maxX = 31;
-	int minY = 10; 
-	int maxY = 11;
-	Bframe++;
 	if (D == 0)
-		fill(roue, minX + V, minY, maxX + V, maxY, Bframe);
+		fill(roue, minX + V, minY, maxX + V, maxY, '0');
 	else if (D == 90)
-		fill(roue, minX, minY + V, maxX, maxY + V, Bframe);
+		fill(roue, minX, minY + V, maxX, maxY + V, 0);
 	else if (D == 180)
-		fill(roue, minX - V, minY, maxX - V, maxY, Bframe);
+		fill(roue, minX - V, minY, maxX - V, maxY, 0);
 	else if (D == 270)
-		fill(roue, minX, minY - V, maxX, maxY - V, Bframe);
-	return Bframe;
+		fill(roue, minX, minY - V, maxX, maxY - V, 0);
 }
+
+
+
 int main() {
-
-
-	fill(roue, 0, 0, maxX, maxY, 0);
-	fill(roue, 44, 0, 45, maxY, 1);
-
-
-
-	int	dimX = 0;
-	int	dimY = 0;
-
+	fill(roue, 0, 0, limX, limY, 32);
+	fill(roue, limX / 2 - 1, 0, limX / 2, limY, '|');
+	
 	for (int j = 0; j < 10000; j++) {  // -- frame generator
-		dimX = 0;
-		dimY = 0;
-
-
-		for (int i = 0; i < maxX * maxY; i++) {													// --/-- map generation 
-			int Bframe = ball();
-			if (roue[dimX][dimY] == 0)
-				printf (" ");
-			else if (roue[dimX][dimY] == 1)
-				printf ( "| |");
-			else if (roue[dimX][dimY] == Bframe)
-				printf ("O");
-			else
-				std::cout << "ERR";
-			if (dimX == maxX - 1)
-				dimY++, dimX = 0, std::cout << "\n";
-			else
-				dimX++;
-		}																						// --/--
-		std::this_thread::sleep_for(std::chrono::milliseconds(200));
+		std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 		std::cout << "\033[H";
-	}		
+		ball();
+		for (int row = 0; row < limY; ++row) {
+			fwrite(roue[row], sizeof roue[row], 1, stdout);
+			putchar('\n');
+		}
+	}
 }
-
