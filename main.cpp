@@ -2,10 +2,16 @@
 #include <thread>
 #include <chrono>
 #include <algorithm>
-const int limX = 100;
-const int limY = 21;
-int ballX = 47; int ballY = 18;
-int U = 1; int D = 0; int L = 0; int R = 1;
+#include <conio.h>
+
+const int limX = 100;							// Max lengh of the arena
+const int limY = 21;							// Max Height of the arena
+
+int ballX = 47; int ballY = 18;					// location of the ball
+int U = 1; int D = 0; int L = 0; int R = 1;		// orientation of the ball
+
+int V = 1;										// environnemental speed
+
 char roue[limY][limX];
 
 
@@ -52,20 +58,38 @@ void ball(int Texture,int V) {
 	fill(roue, ballX, ballY, ballX, ballY, Texture);
 }
 
+void rakette1(int locX, int V) {
+	int locY = 10;
+	int size = 4;
+	fill(roue, locX, locY, locX+1, locY + size, '#');
+	while (true) {
+		char touch = ' ';
+		touch = _getch(); 
 
+		if (touch == 'z') {
+			if (locY + V > 1) {
+				for (int i = 0; i <= size; i++) {
+					fill(roue, locX, locY, locX+1, locY + i, 32);
+				}
+					fill(roue, locX, locY -= V, locX + 1, locY + size, '#'); // ne marche pas
+			}
+		}
+
+	}
+	}
 
 int main() {
 	fill(roue, 0, 0, limX, limY, 32);			// clear array
 	fill(roue, 0, 0, 1, limY, '(');				// left barrer
 	fill(roue, limX - 1, 0, limX, limY, ')');		// right barrer
+	std::thread t(rakette1, 2, V);
 
-	
 	for (int j = 0; j < 10000; j++) {  // -- frame generator
-		std::this_thread::sleep_for(std::chrono::milliseconds(5));
+		std::this_thread::sleep_for(std::chrono::milliseconds(16));
 		std::cout << "\033[H";
-		ball(' ', 0);
+		//ball(' ', 0);
 		fill(roue, limX / 2 - 1, 0, limX / 2, limY, '|');
-		ball('0', 1);
+		//ball('0', V);
 		for (int row = 0; row < limY; ++row) {
 			fwrite(roue[row], sizeof roue[row], 1, stdout);
 			putchar('\n');
