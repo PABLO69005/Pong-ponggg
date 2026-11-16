@@ -4,8 +4,8 @@
 #include <algorithm>
 #include <conio.h>
 
-const int limX = 100;							// Max lengh of the arena
-const int limY = 21;							// Max Height of the arena
+const int limX = 200;							// Max lengh of the arena
+const int limY = 41;							// Max Height of the arena
 
 int ballX = 47; int ballY = 18;					// location of the ball
 int U = 1; int D = 0; int L = 0; int R = 1;		// orientation of the ball
@@ -34,11 +34,11 @@ int check(int localX, int localY) {
 }
 
 void collision_test(int &up, int &down, int &left, int &right, int V) {
+	if (check(ballX - V * left - 1, ballY) == 41 || check(V * right + ballX + 1, ballY) == 40 || check(ballX - V * left - 1, ballY) == '#' || check(V * right + ballX + 1, ballY) == '#') {
+		left = !left; right = !right;
+	}
 	if (ballY - V * up < 0 || V * down + ballY >= limY) {
 		down = !down; up = !up;
-	}
-	if (check(ballX - V * left -1, ballY) == 41 || check(V * right + ballX +1, ballY) == 40 ) {
-		left = !left; right = !right;
 	}
 }
 
@@ -60,36 +60,65 @@ void ball(int Texture,int V) {
 
 void rakette1(int locX, int V) {
 	int locY = 10;
-	int size = 4;
+	int size = 7;
 	fill(roue, locX, locY, locX+1, locY + size, '#');
 	while (true) {
 		char touch = ' ';
 		touch = _getch(); 
 
-		if (touch == 'z') {
-			if (locY + V > 1) {
-				for (int i = 0; i <= size; i++) {
-					fill(roue, locX, locY, locX+1, locY + i, 32);
-				}
-					fill(roue, locX, locY -= V, locX + 1, locY + size, '#'); // ne marche pas
+		if (touch == 'a') {
+			if (locY - V > 1) {
+				fill(roue, locX, locY, locX + 1, locY + size, 32);
+				fill(roue, locX, locY -= V, locX + 1, locY + size - V, '#');
 			}
 		}
+		if (touch == 'q') {
+			if (locY + V < limY) {
+				fill(roue, locX, locY, locX + 1, locY + size, 32);
+				fill(roue, locX, locY += V, locX + 1, locY + size + V, '#');
+			}
+		}
+	}
+}
 
+void rakette2(int locX, int V) {
+	int locY = 10;
+	int size = 7;
+	fill(roue, locX, locY, locX + 1, locY + size, '#');
+	while (true) {
+		char touch = ' ';
+		touch = _getch();
+
+		if (touch == 'p') {
+			if (locY - V > 1) {
+				fill(roue, locX, locY, locX + 1, locY + size, 32);
+				fill(roue, locX, locY -= V, locX + 1, locY + size - V, '#');
+			}
+		}
+		if (touch == 'm') {
+			if (locY + V < limY) {
+				fill(roue, locX, locY, locX + 1, locY + size, 32);
+				fill(roue, locX, locY += V, locX + 1, locY + size + V, '#');
+			}
+		}
 	}
-	}
+}
+
+
 
 int main() {
 	fill(roue, 0, 0, limX, limY, 32);			// clear array
 	fill(roue, 0, 0, 1, limY, '(');				// left barrer
 	fill(roue, limX - 1, 0, limX, limY, ')');		// right barrer
-	std::thread t(rakette1, 2, V);
+	std::thread t1(rakette1, 3, V);
+	std::thread t2(rakette2, 97, V);
 
 	for (int j = 0; j < 10000; j++) {  // -- frame generator
-		std::this_thread::sleep_for(std::chrono::milliseconds(16));
+		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 		std::cout << "\033[H";
-		//ball(' ', 0);
+		ball(' ', 0);
 		fill(roue, limX / 2 - 1, 0, limX / 2, limY, '|');
-		//ball('0', V);
+		ball('0', V);
 		for (int row = 0; row < limY; ++row) {
 			fwrite(roue[row], sizeof roue[row], 1, stdout);
 			putchar('\n');
