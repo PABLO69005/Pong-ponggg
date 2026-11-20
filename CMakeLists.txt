@@ -12,7 +12,7 @@ endif()
 project ("pong")
 
 # Ajoutez une source à l'exécutable de ce projet.
-add_executable (pong "main.cpp" "main.h")
+add_executable (pong "main.cpp" "main.h" "menu.cpp" "game.cpp")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET pong PROPERTY CXX_STANDARD 20)
