@@ -3,19 +3,17 @@
 
 #include "main.h"
 
-void interruption() {
-		if (GetAsyncKeyState(0x57) & 0x0001 || GetAsyncKeyState(0x4C) & 0x0001) {
+void menuinit() {
+	while (true) {
+		if (GetAsyncKeyState(0x57) & 0x0001 && pause == false || GetAsyncKeyState(0xBF) & 0x0001 && pause == false) {
 			pause = true;
-
-		}
-		if (GetAsyncKeyState(0x57) & 0x0001 || GetAsyncKeyState(0x4C) & 0x0001) {
-			pause = false;
+			menu_main();
 		}
 	}
+}
 
 
 int main() {
-	std::thread t_interr(interruption);
+	std::thread t_menu(menuinit);
 	main_game();
-
 }

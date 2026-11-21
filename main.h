@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <conio.h>
 #include <Windows.h>
+#include <string>
 
 #ifndef CONFIG_H
 #define CONFIG_H
@@ -21,6 +22,7 @@ const int limY = 24;							// Max Height of the arena
 inline char roue[limY][limX];
 
 void main_game();
+void menu_main();
 #endif
 
 // TODO: Référencez ici les en-têtes supplémentaires nécessaires à votre programme.
